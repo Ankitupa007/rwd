@@ -140,7 +140,7 @@ const SearchInput = () => {
             <article className="max-w-3xl mx-auto backdrop-blur-xl rounded-3xl py-8 bg-background">
               <header className="mb-8 pb-6 border-b border-black/10">
                 <h1
-                  className="text-4xl prose prose-lg font-bold mb-4 leading-tight"
+                  className="text-4xl font-bold mb-4 leading-tight"
                   style={{
                     fontSize: `${fontSize + 8}px`,
                     fontFamily: fontFamily === 'serif'
