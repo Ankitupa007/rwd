@@ -76,7 +76,7 @@ const Header = () => {
       } backdrop-blur-2xl bg-background/40`}>
       <div className="max-w-4xl mx-auto px-4 lg:px-0  py-4">
         <div className="flex items-center justify-between">
-          {!content || loading ? (<h1 className="text-xl font-black">rWd</h1>) : (<Button
+          {!content || loading ? (<h1 className="text-xl font-black">rwd</h1>) : (<Button
             variant={"secondary"}
             onClick={() => setContent(null)}
             className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
