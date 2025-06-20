@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# RWD: Read Without Distractions
 
-## Getting Started
+<div align="center">
+  <img src="logo.png" alt="RWD Logo" width="200"/>
+</div>
 
-First, run the development server:
+A clean, minimal web application designed to provide a distraction-free reading experience. Transform cluttered web articles into a focused, readable format.
 
+🚀 **Try it now**: [readwd.vercel.app](https://readwd.vercel.app)
+
+## Features
+
+- **Distraction-Free Reading**: Remove ads, sidebars, and other visual clutter from web articles
+- **Clean Interface**: Minimalist design focused on content consumption
+- **Fast Performance**: Lightweight application with quick load times
+- **Responsive Design**: Works seamlessly across desktop and mobile devices
+- **Easy to Use**: Simple, intuitive interface for immediate productivity
+
+## How to Use
+
+1. Visit [readwd.vercel.app](https://readwd.vercel.app)
+2. Paste the URL of any article you want to read
+3. Let RWD transform it into a clean, readable format
+4. Enjoy focused, distraction-free reading!
+
+## For Developers
+
+Want to contribute or run locally? Here's how to get started:
+
+### Prerequisites
+
+- Node.js (version 14 or higher)
+- npm or yarn package manager
+
+### Local Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/rwd.git
+cd rwd
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) to see your local version.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Technology Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend**: [Add your frontend framework/library here]
+- **Deployment**: Vercel
+- **Styling**: [Add your CSS framework/solution here]
 
-## Learn More
+## Contributing
 
-To learn more about Next.js, take a look at the following resources:
+Help make RWD even better! Contributions are welcome and appreciated.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Ways to Contribute
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 🐛 Report bugs or issues
+- 💡 Suggest new features or improvements  
+- 🔧 Submit pull requests with enhancements
+- 📖 Improve documentation
+- 🎨 Enhance the user interface
 
-## Deploy on Vercel
+### Development Guidelines
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-improvement`)
+3. Make your changes and test thoroughly
+4. Commit your changes (`git commit -m 'Add amazing improvement'`)
+5. Push to your branch (`git push origin feature/amazing-improvement`)
+6. Open a Pull Request with a clear description
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Thanks to all contributors who help make reading on the web better
+- Inspired by the need for focused, distraction-free content consumption
+
+## Support
+
+If you encounter any issues or have questions, please:
+- Open an issue on GitHub
+- Check the [documentation](https://readwd.vercel.app)
+
+---
+
+**Made with ❤️ for better reading experiences**
