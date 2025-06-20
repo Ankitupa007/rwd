@@ -1,7 +1,7 @@
 # RWD: Read Without Distractions
 
 <div align="center">
-  <img src="logo.png" alt="RWD Logo" width="200"/>
+  <img src="https://readwd.vercel.app/apple-touch-icon.png" alt="RWD Logo" width="200"/>
 </div>
 
 A clean, minimal web application designed to provide a distraction-free reading experience. Transform cluttered web articles into a focused, readable format.
