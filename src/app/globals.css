@@ -122,10 +122,45 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Maison Neue';
+    font-family: "Maison Neue";
   }
 }
 
 .font-serif-ebook {
-  font-family: et-book, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+  font-family: et-book, Palatino, "Palatino Linotype", "Palatino LT STD",
+    "Book Antiqua", Georgia, serif;
+}
+
+/* globals.css */
+
+html.book {
+  --background: #fdf6e3;
+  --foreground: #111;
+
+  --card: #f5f1e6;
+  --card-foreground: #111;
+
+  --popover: #fefcf4;
+  --popover-foreground: #333;
+
+  --primary: #3e2f1c;
+  --primary-foreground: #fff;
+
+  --secondary: #d6cfb2;
+  --secondary-foreground: #222;
+
+  --muted: #e0dbc2;
+  --muted-foreground: #5c5c5c;
+
+  --accent: #c5b8a5;
+  --accent-foreground: #000;
+
+  --destructive: #b33a3a;
+  --destructive-foreground: #fff;
+
+  --border: #d1c6ae;
+  --input: #e8e1d1;
+  --ring: #a89b7c;
+
+  --radius: 0.5rem;
 }

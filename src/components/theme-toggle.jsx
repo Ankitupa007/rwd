@@ -1,29 +1,35 @@
 "use client"
+
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, BookOpen } from "lucide-react";
+
+const themes = ["light", "dark", "book"];
 
 export const ToggleTheme = () => {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
+
+  const nextTheme = () => {
+    const index = themes.indexOf(theme || "light");
+    const newTheme = themes[(index + 1) % themes.length];
+    setTheme(newTheme);
+  };
+
+  const icon = {
+    light: <Moon className="size-4" />,
+    dark: <BookOpen className="size-4" />,
+    book: <Sun className="size-4" />,
+  };
 
   return (
     <Button
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      onClick={nextTheme}
       size="sm"
       variant="secondary"
       className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
     >
-      <div className="flex items-center gap-2 dark:hidden">
-        <Moon className="size-4" />
-        {/*<span className="block lg:hidden"> Dark </span>*/}
-      </div>
-
-      <div className="dark:flex items-center gap-2 hidden">
-        <Sun className="size-4" />
-        {/*<span className="block lg:hidden">Light</span>*/}
-      </div>
-
-      <span className="sr-only"></span>
+      {icon[theme] || <Moon className="size-4" />}
+      <span className="sr-only">Toggle Theme</span>
     </Button>
   );
 };
