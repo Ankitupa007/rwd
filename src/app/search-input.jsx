@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import he from "he";
 import {
   clearArticles,
   deleteArticle,
@@ -11,6 +12,7 @@ import {
 } from "@/lib/indexedDB";
 import { useStore } from "@/lib/store";
 import { ArrowRight, HardDrive, Loader, Search, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -28,13 +30,15 @@ const SearchInput = () => {
     setLoading,
   } = useStore();
   const [urlHistory, setUrlHistory] = useState([]);
-  const [isOffline, setIsOffline] = useState(false); // Initialize as false to avoid hydration mismatch
+  const [isOffline, setIsOffline] = useState(false);
+  const [isloading, setIsloading] = useState(false);
+  const u = useSearchParams().get("u");
 
   // Load history and offline status on client-side mount
   useEffect(() => {
     async function loadHistory() {
       const articles = await getAllArticles();
-      setUrlHistory(articles.reverse()); // Most recent first
+      setUrlHistory(articles); // Most recent first
     }
     loadHistory();
 
@@ -50,23 +54,54 @@ const SearchInput = () => {
     };
   }, []);
 
+  // Handle search param `u`
+  useEffect(() => {
+    const handleParams = () => {
+      if (!u) return;
+      if (!u.startsWith("http")) toast("Invalid URL");
+      if (u) {
+        setIsloading(true);
+        console.log("Search param u:", u); // Debug log
+        let normalizedUrl = decodeURIComponent(u);
+        // Add https:// if no protocol is specified
+        if (!u.startsWith("http://") && !u.startsWith("https://")) {
+          normalizedUrl = `https://${u}`;
+        }
+        setUrl(normalizedUrl); // Update input field
+        try {
+          new URL(normalizedUrl); // Validate URL
+          console.log("Valid URL, calling extractContent with:", normalizedUrl);
+          extractContent(normalizedUrl); // Call extractContent directly
+          setIsloading(false);
+        } catch (error) {
+          console.error("Invalid URL:", normalizedUrl, error);
+          toast.error("Please enter a valid URL.", {
+            className: "bg-secondary text-foreground",
+          });
+        }
+      }
+    };
+    handleParams();
+  }, [u, setUrl]); // Include setUrl in dependencies
+
   const extractContent = async (inputUrl) => {
+    console.log("extractContent called with:", inputUrl); // Debug log
     setLoading(true);
     try {
       // Check IndexedDB first
       const cachedArticle = await getArticle(inputUrl);
       if (cachedArticle) {
-        // console.log(`Article loaded from IndexedDB for URL: ${inputUrl}`);
+        console.log("Loaded from cache:", cachedArticle);
         setContent(cachedArticle);
         setReadingTime(cachedArticle.readingTime);
-        // Update history from IndexedDB
         const articles = await getAllArticles();
-        setUrlHistory(articles.reverse());
+        setUrlHistory(articles);
         return;
       }
 
       // Only fetch if online
       if (isOffline) {
+        console.log("Offline, cannot fetch new article");
         toast.error(
           "You are offline. Please connect to the internet to fetch new articles.",
           { className: "bg-secondary text-foreground" }
@@ -74,7 +109,7 @@ const SearchInput = () => {
         return;
       }
 
-      // console.log(`Fetching article for URL: ${inputUrl}`); // Log URL for debugging
+      console.log("Fetching from API:", inputUrl);
       const response = await fetch("/api/article", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -82,26 +117,26 @@ const SearchInput = () => {
       });
       const data = await response.json();
       if (data.success) {
+        console.log("API success:", data.data);
         setContent(data.data);
         setReadingTime(data.data.readingTime);
-        setUrl("");
-        // Save to IndexedDB
-        const saved = await saveArticle({ ...data.data, fromCache: false });
+        setUrl(""); // Clear input field
+        const saved = await saveArticle({
+          ...data.data,
+          fromCache: false,
+          savedAt: Date.now(),
+        });
         if (!saved) {
           toast("Failed to save article to cache");
         }
-
-        // Update history from IndexedDB
         const articles = await getAllArticles();
-        setUrlHistory(articles.reverse());
+        setUrlHistory(articles);
       } else {
-        console.error(
-          `Extraction failed for ${inputUrl}: ${data.error} (${data.code})`
-        );
+        console.error("API error:", data.error, data.code);
         toast.error(`Error: ${data.error} (${data.code})`);
       }
     } catch (error) {
-      console.error(`Fetch error for ${inputUrl}: ${error.message}`);
+      console.error("extractContent error:", error.message);
       toast.error("Failed to fetch article. Please try again.");
     } finally {
       setLoading(false);
@@ -109,11 +144,17 @@ const SearchInput = () => {
   };
 
   const handleSubmit = () => {
-    if (!url.trim()) return;
+    console.log("handleSubmit called with url:", url); // Debug log
+    if (!url.trim()) {
+      console.log("URL is empty, exiting handleSubmit");
+      return;
+    }
     try {
       new URL(url); // Validate URL format
+      console.log("Valid URL, calling extractContent");
       extractContent(url);
-    } catch {
+    } catch (error) {
+      console.error("Invalid URL:", url, error);
       toast.error("Please enter a valid URL.", {
         className: "bg-secondary text-foreground",
       });
@@ -129,7 +170,7 @@ const SearchInput = () => {
     const deleted = await deleteArticle(urlToRemove);
     if (deleted) {
       const articles = await getAllArticles();
-      setUrlHistory(articles.reverse());
+      setUrlHistory(articles);
       toast("Article removed from history");
     } else {
       toast("Failed to remove article from history");
@@ -162,17 +203,29 @@ const SearchInput = () => {
     return `${formattedDate}, ${formattedTime}`;
   };
 
+  const decodeTitle = (title) => {
+    return he.decode(title);
+  };
+
   return (
     <div className="min-h-screen transition-all duration-500">
       <div className="max-w-6xl mx-auto px-6">
-        {!content && (
+        {loading && (
+          <div className="flex justify-center items-center h-[50vh]">
+            <Loader size={16} className="w-4 h-4 animate-spin mr-2" />
+            <span className="text-sm">hold on...</span>
+          </div>
+        )}
+
+        {!content && !loading && (
           <div className="text-center py-8">
             <div className="py-12">
               <span className="mb-12 text-xs text-foreground/60 font-bold uppercase">
                 ZERO ADS | NO POP-UPS | ONLY CONTENT
               </span>
-              <h2 className="text-5xl lg:text-7xl font-semibold my-4 tracking-tighter">
-                Read without distractions
+              <h2 className="text-5xl lg:text-7xl font-semibold my-4 tracking-tighter font-serif">
+                Read Without{" "}
+                <span className="border-yellow-300">Distractions</span>
               </h2>
               <p className="text-lg text-gray-600">
                 Enter a URL to convert web content into a beautiful reading
@@ -345,7 +398,7 @@ const SearchInput = () => {
               <h1
                 className="text-4xl font-bold mb-4 leading-tight"
                 style={{
-                  fontSize: `${fontSize + 8}px`,
+                  // fontSize: `${fontSize + 8}px`,
                   fontFamily:
                     fontFamily === "serif"
                       ? 'et-book, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif'
@@ -354,7 +407,7 @@ const SearchInput = () => {
                       : "Monaco, monospace",
                 }}
               >
-                {content.title}
+                {decodeTitle(content.title)} {/* Decode title */}
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                 <span>By {content.author}</span>
@@ -374,11 +427,11 @@ const SearchInput = () => {
             </header>
             <div>
               {content.image && (
-                <div className="relative overflow-hidden">
+                <div className="relative overflow-hidden h-full">
                   <img
                     src={content.image}
-                    alt={content.title}
-                    className="w-full h-64 object-cover transition-transform duration-200 group-hover:scale-105 rounded-lg"
+                    alt={decodeTitle(content.title)}
+                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 rounded-lg"
                     onError={(e) => (e.target.style.display = "none")}
                   />
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />

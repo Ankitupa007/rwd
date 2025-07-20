@@ -50,7 +50,9 @@ export async function getAllArticles() {
   const db = await initDB();
   if (!db) return [];
   try {
-    return await db.getAll(STORE_NAME);
+    const allArticles = await db.getAll(STORE_NAME);
+
+    return allArticles.sort((a, b) => b.savedAt - a.savedAt);
   } catch (error) {
     console.error("Failed to get all articles from IndexedDB:", error);
     return [];

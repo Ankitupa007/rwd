@@ -16,6 +16,8 @@ import {
 import { ToggleTheme } from "../theme-toggle";
 import {
   ArrowLeft,
+  Check,
+  Copy,
   Download,
   Minus,
   Plus,
@@ -24,6 +26,8 @@ import {
   Share2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Header = () => {
   const {
@@ -38,7 +42,19 @@ const Header = () => {
   } = useStore();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [copied, setCopied] = useState(false);
 
+  const handleCopy = async (txt) => {
+    try {
+      await navigator.clipboard.writeText(txt);
+      setCopied(true);
+      toast("URL copied successfully!");
+      setTimeout(() => setCopied(false), 1500); // Reset icon after 1.5s
+    } catch (error) {
+      console.error("Failed to copy:", error);
+    }
+  };
+  const router = useRouter();
   const controlHeader = () => {
     if (typeof window !== "undefined") {
       if (window.scrollY > lastScrollY) {
@@ -96,16 +112,23 @@ const Header = () => {
         isVisible ? "translate-y-0" : "-translate-y-full"
       } backdrop-blur-2xl bg-background/40`}
     >
-      <div className="max-w-4xl mx-auto px-4 lg:px-0  py-4">
+      <div className="max-w-4xl mx-auto px-4 lg:px-0 py-4">
         <div className="flex items-center justify-between">
           {!content || loading ? (
-            <h1 className="text-xl font-black">rwd</h1>
+            <a href="/">
+              <div className="flex items-center relative">
+                {/* <img src="/logo.png" alt="" className="w-16 mr-2" /> */}
+                <h1 className="text-5xl font-serif font-black z-10 w-10">R</h1>
+                <span className="absolute bottom-0 right-0 bg-[#ffeb3b] dark:bg-amber-300/80  rounded-full w-6 h-6"></span>
+              </div>
+            </a>
           ) : (
             <Button
               variant={"secondary"}
               onClick={() => {
                 setContent(null);
                 setUrl("");
+                router.push("/");
               }}
               className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
             >
@@ -121,6 +144,18 @@ const Header = () => {
                   className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
                 >
                   <Download className="w-5 h-5" />
+                </Button>
+                <Button
+                  onClick={() => handleCopy(content.url)}
+                  variant="secondary"
+                  size="icon"
+                  className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
+                >
+                  {copied ? (
+                    <Check className="w-4 h-4 text-green-500" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                 </Button>
                 <Button
                   variant={"secondary"}
