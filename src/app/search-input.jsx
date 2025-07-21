@@ -398,7 +398,7 @@ const SearchInput = () => {
               <h1
                 className="text-4xl font-bold mb-4 leading-tight"
                 style={{
-                  // fontSize: `${fontSize + 8}px`,
+                  fontSize: `${fontSize + 16}px`,
                   fontFamily:
                     fontFamily === "serif"
                       ? 'et-book, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif'
