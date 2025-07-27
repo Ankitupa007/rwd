@@ -45,6 +45,35 @@ function extractMetadata(document) {
 }
 
 // Retry utility function
+// User-Agent pool for rotation
+const USER_AGENTS = [
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+];
+
+// Simple in-memory cache for recent URLs (LRU, max 100)
+const urlCache = new Map();
+function getCached(url) {
+  if (urlCache.has(url)) {
+    const val = urlCache.get(url);
+    // Move to end (LRU)
+    urlCache.delete(url);
+    urlCache.set(url, val);
+    return val;
+  }
+  return null;
+}
+function setCached(url, data) {
+  urlCache.set(url, data);
+  if (urlCache.size > 100) {
+    // Remove oldest
+    const firstKey = urlCache.keys().next().value;
+    urlCache.delete(firstKey);
+  }
+}
+
 async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -86,16 +115,43 @@ async function extractArticleContent(url) {
       throw new Error("Invalid URL format");
     }
 
+    // Check cache first
+    const cached = getCached(url);
+    if (cached) {
+      console.log(`Cache hit for URL: ${url}`);
+      return {
+        success: true,
+        data: { ...cached, fromCache: true },
+      };
+    }
+
+    // Randomize User-Agent and Referer
+    const userAgent =
+      USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+    const referer = "https://www.google.com/";
+
+    // Random delay (200-800ms) to avoid bot detection
+    await new Promise((r) => setTimeout(r, 200 + Math.random() * 600));
+
     // Fetch the webpage with retry
     console.log(`Fetching URL: ${url}`);
     const response = await fetchWithRetry(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; ReaderMode/1.0)",
+        "User-Agent": userAgent,
         Accept:
           "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
-        "Accept-Encoding": "gzip, deflate",
+        "Accept-Encoding": "gzip, deflate, br",
         Connection: "keep-alive",
+        Referer: referer,
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "cross-site",
+        "Sec-Fetch-User": "?1",
+        "Cache-Control": "max-age=0",
+        // You may add a dummy cookie for some sites, but avoid real login cookies
+        // "Cookie": "_ga=GA1.2.123456789.1234567890; _gid=GA1.2.987654321.0987654321",
       },
       timeout: 10000,
     });
@@ -160,6 +216,8 @@ async function extractArticleContent(url) {
       fromCache: false,
     };
 
+    // Cache result
+    setCached(url, articleData);
     return {
       success: true,
       data: articleData,

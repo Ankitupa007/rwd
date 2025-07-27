@@ -61,7 +61,7 @@ const SearchInput = () => {
       if (!u.startsWith("http")) toast("Invalid URL");
       if (u) {
         setIsloading(true);
-        console.log("Search param u:", u); // Debug log
+        // console.log("Search param u:", u); // Debug log
         let normalizedUrl = decodeURIComponent(u);
         // Add https:// if no protocol is specified
         if (!u.startsWith("http://") && !u.startsWith("https://")) {
@@ -70,7 +70,7 @@ const SearchInput = () => {
         setUrl(normalizedUrl); // Update input field
         try {
           new URL(normalizedUrl); // Validate URL
-          console.log("Valid URL, calling extractContent with:", normalizedUrl);
+          // console.log("Valid URL, calling extractContent with:", normalizedUrl);
           extractContent(normalizedUrl); // Call extractContent directly
           setIsloading(false);
         } catch (error) {
@@ -85,13 +85,13 @@ const SearchInput = () => {
   }, [u, setUrl]); // Include setUrl in dependencies
 
   const extractContent = async (inputUrl) => {
-    console.log("extractContent called with:", inputUrl); // Debug log
+    // console.log("extractContent called with:", inputUrl); // Debug log
     setLoading(true);
     try {
       // Check IndexedDB first
       const cachedArticle = await getArticle(inputUrl);
       if (cachedArticle) {
-        console.log("Loaded from cache:", cachedArticle);
+        // console.log("Loaded from cache:", cachedArticle);
         setContent(cachedArticle);
         setReadingTime(cachedArticle.readingTime);
         const articles = await getAllArticles();
@@ -101,7 +101,7 @@ const SearchInput = () => {
 
       // Only fetch if online
       if (isOffline) {
-        console.log("Offline, cannot fetch new article");
+        // console.log("Offline, cannot fetch new article");
         toast.error(
           "You are offline. Please connect to the internet to fetch new articles.",
           { className: "bg-secondary text-foreground" }
@@ -109,7 +109,7 @@ const SearchInput = () => {
         return;
       }
 
-      console.log("Fetching from API:", inputUrl);
+      // console.log("Fetching from API:", inputUrl);
       const response = await fetch("/api/article", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -117,7 +117,7 @@ const SearchInput = () => {
       });
       const data = await response.json();
       if (data.success) {
-        console.log("API success:", data.data);
+        // console.log("API success:", data.data);
         setContent(data.data);
         setReadingTime(data.data.readingTime);
         setUrl(""); // Clear input field
@@ -144,14 +144,14 @@ const SearchInput = () => {
   };
 
   const handleSubmit = () => {
-    console.log("handleSubmit called with url:", url); // Debug log
+    // console.log("handleSubmit called with url:", url); // Debug log
     if (!url.trim()) {
-      console.log("URL is empty, exiting handleSubmit");
+      // console.log("URL is empty, exiting handleSubmit");
       return;
     }
     try {
       new URL(url); // Validate URL format
-      console.log("Valid URL, calling extractContent");
+      // console.log("Valid URL, calling extractContent");
       extractContent(url);
     } catch (error) {
       console.error("Invalid URL:", url, error);
@@ -224,8 +224,7 @@ const SearchInput = () => {
                 ZERO ADS | NO POP-UPS | ONLY CONTENT
               </span>
               <h2 className="text-5xl lg:text-7xl font-semibold my-4 tracking-tighter font-serif">
-                Read Without{" "}
-                <span className="border-yellow-300">Distractions</span>
+                Read Without <span className="">Distractions</span>
               </h2>
               <p className="text-lg text-gray-600">
                 Enter a URL to convert web content into a beautiful reading
@@ -238,7 +237,6 @@ const SearchInput = () => {
                 </p>
               )}
             </div>
-
             <div className="max-w-md mx-auto">
               <div className="relative max-w-lg mx-auto">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
@@ -265,13 +263,66 @@ const SearchInput = () => {
                 </Button>
               </div>
             </div>
-
+            {/* Extension */}
+            <section className="mt-8 mx-auto">
+              <div>
+                {/* <p className="text-gray-600 mt-2">
+                  If you prefer RWD as a browser extension
+                </p> */}
+                <div className="flex md:flex-row md:items-center flex-col justify-center items-start gap-4 mt-4">
+                  <a
+                    href="https://addons.mozilla.org/en-US/firefox/addon/rwd"
+                    target="_blank"
+                    className="rounded-full border border-border flex items-center gap-2 bg-none pl-1 pr-4 py-1 hover:shadow-sm hover:text-orange-400 text-foreground transition-all duration-200 backdrop-blur-sm cursor-pointer text-sm"
+                    aria-label="Add this extension to Firefox"
+                  >
+                    <img
+                      src="/firefox.png"
+                      alt="Firefox logo"
+                      className="h-9 "
+                    />
+                    <span className="py-2 text-sm font-semibold">
+                      Firefox Addon
+                    </span>
+                  </a>
+                  <a
+                    href="#"
+                    className="rounded-full border border-border flex items-center gap-2 bg-none pl-1 pr-4 py-1 text-foreground transition-all duration-200 backdrop-blur-sm cursor-default text-sm"
+                    aria-label="Add this extension to Firefox"
+                  >
+                    <img
+                      src="/edge.svg"
+                      alt="Edge logo"
+                      className="h-9 grayscale"
+                    />
+                    <span className="py-2 text-sm font-semibold">
+                      Edge Extension (soon)
+                    </span>
+                  </a>
+                  <a
+                    href="#"
+                    className="rounded-full border border-border flex items-center gap-2 bg-none pl-1 pr-4 py-1 text-foreground transition-all duration-200 backdrop-blur-sm cursor-default text-sm"
+                    aria-label="Add this extension to Firefox"
+                  >
+                    <img
+                      src="/chrome.png"
+                      alt="Chrome logo"
+                      className="h-9 grayscale"
+                    />
+                    <span className="py-2 text-sm font-semibold">
+                      Chrome Extension (soon)
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </section>
             {/* History Section */}
             {urlHistory.length > 0 && (
-              <section className="mt-12">
+              <section className="mt-8">
                 <div className="flex justify-between items-center my-8">
                   <h3 className="text-lg font-semibold text-foreground">
-                    Recent Articles
+                    Recent Articles{" "}
+                    {urlHistory.length > 0 && `(${urlHistory.length})`}
                   </h3>
                   <Button
                     variant="secondary"
@@ -323,12 +374,14 @@ const SearchInput = () => {
 
                           <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
                             <span>By {item.author}</span>
-                            <span>{getDateAndTime(item.publishDate)}</span>
                           </div>
 
                           <div className="flex items-center justify-between">
-                            <span className="text-xs text-muted-foreground/80 bg-muted px-2 py-1 rounded-full">
+                            <span className="text-xs font-mono text-muted-foreground/80 bg-muted px-2 py-1 rounded-full">
                               cached
+                            </span>
+                            <span className="flex font-mono items-center justify-between text-xs text-muted-foreground">
+                              {getDateAndTime(item.publishDate)}
                             </span>
                           </div>
                         </div>
@@ -351,7 +404,6 @@ const SearchInput = () => {
                 </div>
               </section>
             )}
-
             <section className="py-18">
               <div className="border-4 border-border h-[40rem] rounded-xl p-8 space-y-6">
                 <section className="max-w-lg mx-auto space-y-6">
