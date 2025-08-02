@@ -15,6 +15,7 @@ import { ArrowRight, HardDrive, Loader, Search, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import Extension from "@/components/common/Extension";
 
 const SearchInput = () => {
   const {
@@ -219,14 +220,14 @@ const SearchInput = () => {
 
         {!content && !loading && (
           <div className="text-center py-8">
-            <div className="py-12">
+            <div className="py-10">
               <span className="mb-12 text-xs text-foreground/60 font-bold uppercase">
                 ZERO ADS | NO POP-UPS | ONLY CONTENT
               </span>
-              <h2 className="text-5xl lg:text-7xl font-semibold my-4 tracking-tighter font-serif">
+              <h2 className="text-5xl font-serif lg:text-7xl font-semibold my-4 tracking-tighter">
                 Read Without <span className="">Distractions</span>
               </h2>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-foreground/60">
                 Enter a URL to convert web content into a beautiful reading
                 experience
               </p>
@@ -264,59 +265,9 @@ const SearchInput = () => {
               </div>
             </div>
             {/* Extension */}
-            <section className="mt-8 mx-auto">
-              <div>
-                {/* <p className="text-gray-600 mt-2">
-                  If you prefer RWD as a browser extension
-                </p> */}
-                <div className="flex md:flex-row md:items-center flex-col justify-center items-start gap-4 mt-4">
-                  <a
-                    href="https://addons.mozilla.org/en-US/firefox/addon/rwd"
-                    target="_blank"
-                    className="rounded-full border border-border flex items-center gap-2 bg-none pl-1 pr-4 py-1 hover:shadow-sm hover:text-orange-400 text-foreground transition-all duration-200 backdrop-blur-sm cursor-pointer text-sm"
-                    aria-label="Add this extension to Firefox"
-                  >
-                    <img
-                      src="/firefox.png"
-                      alt="Firefox logo"
-                      className="h-9 "
-                    />
-                    <span className="py-2 text-sm font-semibold">
-                      Firefox Addon
-                    </span>
-                  </a>
-                  <a
-                    href="#"
-                    className="rounded-full border border-border flex items-center gap-2 bg-none pl-1 pr-4 py-1 text-foreground transition-all duration-200 backdrop-blur-sm cursor-default text-sm"
-                    aria-label="Add this extension to Firefox"
-                  >
-                    <img
-                      src="/edge.svg"
-                      alt="Edge logo"
-                      className="h-9 grayscale"
-                    />
-                    <span className="py-2 text-sm font-semibold">
-                      Edge Extension (soon)
-                    </span>
-                  </a>
-                  <a
-                    href="#"
-                    className="rounded-full border border-border flex items-center gap-2 bg-none pl-1 pr-4 py-1 text-foreground transition-all duration-200 backdrop-blur-sm cursor-default text-sm"
-                    aria-label="Add this extension to Firefox"
-                  >
-                    <img
-                      src="/chrome.png"
-                      alt="Chrome logo"
-                      className="h-9 grayscale"
-                    />
-                    <span className="py-2 text-sm font-semibold">
-                      Chrome Extension (soon)
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </section>
+            <Extension />
             {/* History Section */}
+
             {urlHistory.length > 0 && (
               <section className="mt-8">
                 <div className="flex justify-between items-center my-8">
@@ -329,7 +280,7 @@ const SearchInput = () => {
                     onClick={handleClearAllHistory}
                     className="text-sm text-gray-500 hover:text-red-700 cursor-pointer rounded-full"
                   >
-                    Clear History
+                    Clear articles
                   </Button>
                 </div>
 
@@ -350,7 +301,7 @@ const SearchInput = () => {
                               onError={(e) => {
                                 e.target.src = "/dummy.png";
                               }}
-                              className="w-full h-48 object-cover transition-transform duration-200 group-hover:scale-105"
+                              className="w-full h-54 object-cover transition-transform duration-200 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                           </div>
@@ -367,7 +318,7 @@ const SearchInput = () => {
                         )}
 
                         {/* Content */}
-                        <div className="p-4 text-left">
+                        <div className="px-4 py-8 text-left">
                           <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 leading-tight">
                             {item.title}
                           </h3>
@@ -375,15 +326,15 @@ const SearchInput = () => {
                           <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
                             <span>By {item.author}</span>
                           </div>
+                        </div>
 
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-mono text-muted-foreground/80 bg-muted px-2 py-1 rounded-full">
-                              cached
-                            </span>
-                            <span className="flex font-mono items-center justify-between text-xs text-muted-foreground">
-                              {getDateAndTime(item.publishDate)}
-                            </span>
-                          </div>
+                        <div className="absolute bottom-2 px-3 flex items-center w-full justify-between">
+                          <span className="text-xs font-mono text-muted-foreground/80 bg-muted px-2 py-1 rounded-full">
+                            {item.feedName ? `rss: ${item.feedName}` : "cached"}
+                          </span>
+                          <span className="flex font-mono items-center justify-between text-xs text-muted-foreground">
+                            {getDateAndTime(item.publishDate)}
+                          </span>
                         </div>
 
                         {/* Remove Button */}
@@ -404,6 +355,7 @@ const SearchInput = () => {
                 </div>
               </section>
             )}
+
             <section className="py-18">
               <div className="border-4 border-border h-[40rem] rounded-xl p-8 space-y-6">
                 <section className="max-w-lg mx-auto space-y-6">
@@ -504,6 +456,8 @@ const SearchInput = () => {
               }}
               dangerouslySetInnerHTML={{ __html: content.content }}
             />
+            <div></div>
+            <Extension />
           </article>
         )}
       </div>

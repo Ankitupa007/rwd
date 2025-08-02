@@ -21,6 +21,7 @@ import {
   Download,
   Minus,
   Plus,
+  Rss,
   Settings,
   Share,
   Share2,
@@ -80,20 +81,21 @@ const Header = () => {
     document.body.removeChild(element);
   };
 
-  const shareContent = async () => {
-    if (!content) return;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: content.title,
-          text: content.title,
-          url: content.url,
-        });
-      } catch (err) {
-        console.log("Error sharing:", err);
-      }
-    }
-  };
+  // const shareContent = async () => {
+  //   if (!content) return;
+  //   if (navigator.share) {
+  //     try {
+  //       await navigator.share({
+  //         title: content.title,
+  //         text: content.title,
+  //         url: content.url,
+  //       });
+  //     } catch (err) {
+  //       console.log("Error sharing:", err);
+  //     }
+  //   }
+  // };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.addEventListener("scroll", controlHeader);
@@ -112,7 +114,7 @@ const Header = () => {
         isVisible ? "translate-y-0" : "-translate-y-full"
       } backdrop-blur-2xl bg-background/40`}
     >
-      <div className="max-w-4xl mx-auto px-4 lg:px-0 py-4">
+      <div className="max-w-6xl mx-auto px-4 lg:px-0 py-4">
         <div className="flex items-center justify-between">
           {!content || loading ? (
             <a href="/">
@@ -128,7 +130,6 @@ const Header = () => {
               onClick={() => {
                 setContent(null);
                 setUrl("");
-                router.push("/");
               }}
               className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
             >
@@ -157,15 +158,30 @@ const Header = () => {
                     <Copy className="w-4 h-4" />
                   )}
                 </Button>
-                <Button
+                {/* <Button
                   variant={"secondary"}
                   onClick={shareContent}
                   className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
                 >
                   <Share2 className="w-5 h-5" />
-                </Button>
+                </Button> */}
               </div>
             )}
+            <div>
+              <Button
+                onClick={() => {
+                  setContent(null);
+                  setUrl("");
+                  router.push("/feeds");
+                }}
+                variant="secondary"
+                size="icon"
+                className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
+              >
+                <Rss className="w-4 h-4" />
+              </Button>
+            </div>
+
             <Popover side={"right"}>
               <PopoverTrigger asChild>
                 <Button

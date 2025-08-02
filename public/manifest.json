@@ -1,6 +1,6 @@
 {
-  "name": "Boring Reader",
-  "short_name": "Reader",
+  "name": "RWD-Read Without Distractions",
+  "short_name": "RWD",
   "description": "A distraction-free reader mode for web articles",
   "start_url": "/",
   "display": "standalone",

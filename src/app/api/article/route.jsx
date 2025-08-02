@@ -101,7 +101,7 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
 }
 
 // Main extraction function
-async function extractArticleContent(url) {
+async function extractArticleContent(url, feedName) {
   try {
     // Validate URL
     let urlObj;
@@ -214,6 +214,7 @@ async function extractArticleContent(url) {
       url: url,
       extractedAt: new Date().toISOString(),
       fromCache: false,
+      feedName: feedName || null, 
     };
 
     // Cache result
@@ -260,7 +261,7 @@ async function extractArticleContent(url) {
 // App Router Version
 export async function POST(request) {
   try {
-    const { url } = await request.json();
+    const { url, feedName } = await request.json();
     if (!url) {
       console.error("No URL provided in request");
       return Response.json(
@@ -273,7 +274,7 @@ export async function POST(request) {
       );
     }
 
-    const result = await extractArticleContent(url);
+    const result = await extractArticleContent(url, feedName);
 
     return Response.json(result, {
       status: result.success ? 200 : 400,
