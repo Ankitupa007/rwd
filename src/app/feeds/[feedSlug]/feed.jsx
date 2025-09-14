@@ -1,25 +1,23 @@
 "use client";
 import Extension from "@/components/common/Extension";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent} from "@/components/ui/card";
 import {
-  clearRSSFeeds,
-  deleteRSSFeed,
-  getAllArticles,
-  getAllRSSFeeds,
-  getArticle,
-  getRSSFeed,
-  saveArticle,
-  saveRSSFeed,
+    deleteRSSFeed,
+    getAllArticles,
+    getAllRSSFeeds,
+    getArticle,
+    getRSSFeed,
+    saveArticle,
+    saveRSSFeed,
 } from "@/lib/indexedDB";
-import { useStore } from "@/lib/store";
+import {useStore} from "@/lib/store";
 import he from "he";
-import { ArrowLeft, HardDrive, Loader, RefreshCcw, Rss, X } from "lucide-react";
+import {ArrowLeft, HardDrive, Loader, RefreshCcw} from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import {useParams} from "next/navigation";
+import {useEffect, useState} from "react";
+import {toast} from "sonner";
 
 // Utility to format date
 const getDateAndTime = (dateString) => {

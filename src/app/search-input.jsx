@@ -1,20 +1,14 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
 import he from "he";
-import {
-  clearArticles,
-  deleteArticle,
-  getAllArticles,
-  getArticle,
-  saveArticle,
-} from "@/lib/indexedDB";
-import { useStore } from "@/lib/store";
-import { ArrowRight, HardDrive, Loader, Search, X } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import {clearArticles, deleteArticle, getAllArticles, getArticle, saveArticle,} from "@/lib/indexedDB";
+import {useStore} from "@/lib/store";
+import {ArrowRight, HardDrive, Loader, Search, X} from "lucide-react";
+import {useSearchParams} from "next/navigation";
+import {useEffect, useState} from "react";
+import {toast} from "sonner";
 import Extension from "@/components/common/Extension";
 
 const SearchInput = () => {
@@ -34,6 +28,39 @@ const SearchInput = () => {
   const [isOffline, setIsOffline] = useState(false);
   const [isloading, setIsloading] = useState(false);
   const u = useSearchParams().get("u");
+
+    function setMeta(name, value) {
+        let el =
+            document.querySelector(`meta[name='${name}']`) ||
+            document.querySelector(`meta[property='${name}']`);
+        if (!el) {
+            el = document.createElement("meta");
+            if (name.startsWith("og:") || name.startsWith("twitter:")) {
+                el.setAttribute("property", name);
+            } else {
+                el.setAttribute("name", name);
+            }
+            document.head.appendChild(el);
+        }
+        el.setAttribute("content", value);
+    }
+
+    useEffect(() => {
+        if (content?.title) {
+            const decodedTitle = he.decode(content.metaDataTitle);
+
+            // Update <title>
+            document.title = decodedTitle; 
+
+            // Update description if available
+            const description = content.excerpt || "Read this article distraction-free.";
+            setMeta("description", description);
+            setMeta("og:title", decodedTitle);
+            setMeta("og:description", description);
+            setMeta("twitter:title", decodedTitle);
+            setMeta("twitter:description", description);
+        }
+    }, [content]);
 
   // Load history and offline status on client-side mount
   useEffect(() => {
@@ -85,6 +112,8 @@ const SearchInput = () => {
     handleParams();
   }, [u, setUrl]); // Include setUrl in dependencies
 
+
+
   const extractContent = async (inputUrl) => {
     // console.log("extractContent called with:", inputUrl); // Debug log
     setLoading(true);
@@ -120,6 +149,7 @@ const SearchInput = () => {
       if (data.success) {
         // console.log("API success:", data.data);
         setContent(data.data);
+        console.log(data.data)
         setReadingTime(data.data.readingTime);
         setUrl(""); // Clear input field
         const saved = await saveArticle({
@@ -413,7 +443,7 @@ const SearchInput = () => {
               >
                 {decodeTitle(content.title)} {/* Decode title */}
               </h1>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/70">
                 <span>By {content.author}</span>
                 <span>•</span>
                 <span>{getDateAndTime(content.publishDate)}</span>

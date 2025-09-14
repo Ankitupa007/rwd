@@ -24,6 +24,7 @@ function extractMetadata(document) {
       getMetaContent('meta[name="twitter:title"]') ||
       document.title ||
       "Untitled",
+      metaDataTitle: document.querySelector("title")?.textContent || null,
     description:
       getMetaContent('meta[property="og:description"]') ||
       getMetaContent('meta[name="description"]') ||
@@ -202,6 +203,7 @@ async function extractArticleContent(url, feedName) {
 
     const articleData = {
       title: article.title || metadata.title,
+        metaDataTitle: metadata.metaDataTitle,
       author: metadata.author,
       publishDate: metadata.publishDate,
       description: metadata.description,

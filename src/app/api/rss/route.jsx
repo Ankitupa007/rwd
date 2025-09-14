@@ -44,7 +44,7 @@ async function discoverFeedUrl(homepageUrl) {
       homepageUrl
     )}`;
     const res = await fetch(proxy);
-    if (!res.ok) throw new Error("Failed homepage fetch");
+    if (!res.ok) console.log("Failed homepage fetch");
     const html = await res.text();
     const dom = new JSDOM(html);
     const feedLink = dom.window.document.querySelector(
@@ -160,7 +160,7 @@ async function fetchRSSFeed(inputUrl) {
       .map(cleanFeedItem);
 
     if (!validItems.length) {
-      throw new Error("No valid feed items found");
+      console.log("No valid feed items found");
     }
 
     return {

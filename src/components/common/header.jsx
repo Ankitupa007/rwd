@@ -1,34 +1,13 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { useStore } from "@/lib/store";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ToggleTheme } from "../theme-toggle";
-import {
-  ArrowLeft,
-  Check,
-  Copy,
-  Download,
-  Minus,
-  Plus,
-  Rss,
-  Settings,
-  Share,
-  Share2,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import {Button} from "@/components/ui/button";
+import {useStore} from "@/lib/store";
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
+import {ToggleTheme} from "../theme-toggle";
+import {ArrowLeft, Check, Copy, Download, Minus, Plus, Rss, Settings,} from "lucide-react";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
+import {toast} from "sonner";
 
 const Header = () => {
   const {

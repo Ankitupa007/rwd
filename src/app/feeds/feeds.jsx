@@ -1,23 +1,21 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
 import {
-  clearRSSFeeds,
-  deleteRSSFeed,
-  getAllArticles,
-  getAllRSSFeeds,
-  getArticle,
-  saveArticle,
-  saveRSSFeed,
+    clearRSSFeeds,
+    deleteRSSFeed,
+    getAllArticles,
+    getAllRSSFeeds,
+    getArticle,
+    saveArticle,
+    saveRSSFeed,
 } from "@/lib/indexedDB";
-import { useStore } from "@/lib/store";
+import {useStore} from "@/lib/store";
 import he from "he";
-import { FileText, HardDrive, Loader, Rss, X } from "lucide-react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import {HardDrive, Loader, Rss} from "lucide-react";
+import {useSearchParams} from "next/navigation";
+import {useEffect, useState} from "react";
+import {toast} from "sonner";
 import FeedCard from "./[feedSlug]/FeedCard";
 import Extension from "@/components/common/Extension";
 
