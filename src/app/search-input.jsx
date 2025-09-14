@@ -50,7 +50,7 @@ const SearchInput = () => {
             const decodedTitle = he.decode(content.metaDataTitle);
 
             // Update <title>
-            document.title = decodedTitle;
+            document.title = decodedTitle; 
 
             // Update description if available
             const description = content.excerpt || "Read this article distraction-free.";
