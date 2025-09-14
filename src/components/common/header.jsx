@@ -1,13 +1,13 @@
 "use client";
-import {Button} from "@/components/ui/button";
-import {useStore} from "@/lib/store";
-import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
-import {ToggleTheme} from "../theme-toggle";
-import {ArrowLeft, Check, Copy, Download, Minus, Plus, Rss, Settings,} from "lucide-react";
-import {useEffect, useState} from "react";
-import {useRouter} from "next/navigation";
-import {toast} from "sonner";
+import { Button } from "@/components/ui/button";
+import { useStore } from "@/lib/store";
+import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import { ToggleTheme } from "../theme-toggle";
+import { ArrowLeft, Check, Copy, Download, Minus, Plus, Rss, Settings, } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Header = () => {
   const {
@@ -89,9 +89,8 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky border-b top-0 left-0 w-full z-50 transition-transform duration-300 ease-in-out ${
-        isVisible ? "translate-y-0" : "-translate-y-full"
-      } backdrop-blur-2xl bg-background/40`}
+      className={`sticky border-b top-0 left-0 w-full z-50 transition-transform duration-300 ease-in-out ${isVisible ? "translate-y-0" : "-translate-y-full"
+        } backdrop-blur-2xl bg-background/40`}
     >
       <div className="max-w-6xl mx-auto px-4 lg:px-0 py-4">
         <div className="flex items-center justify-between">
@@ -109,6 +108,7 @@ const Header = () => {
               onClick={() => {
                 setContent(null);
                 setUrl("");
+                router.push("/")
               }}
               className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
             >
