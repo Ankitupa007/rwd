@@ -326,7 +326,7 @@ const SearchInput = () => {
                         {item.image ? (
                           <div className="relative overflow-hidden h-48">
                             <img
-                              src={item.image}
+                              src={item.image || "/dummy.png"}
                               alt={item.title}
                               onError={(e) => {
                                 e.target.src = "/dummy.png";

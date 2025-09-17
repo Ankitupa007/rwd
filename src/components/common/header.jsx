@@ -4,10 +4,11 @@ import { useStore } from "@/lib/store";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { ToggleTheme } from "../theme-toggle";
-import { ArrowLeft, Check, Copy, Download, Minus, Plus, Rss, Settings, } from "lucide-react";
+import {ArrowLeft, Check, Copy, Download, Github, Minus, Plus, Rss, Settings,} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const Header = () => {
   const {
@@ -137,30 +138,20 @@ const Header = () => {
                     <Copy className="w-4 h-4" />
                   )}
                 </Button>
-                {/* <Button
-                  variant={"secondary"}
-                  onClick={shareContent}
-                  className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
-                >
-                  <Share2 className="w-5 h-5" />
-                </Button> */}
               </div>
             )}
-            <div>
-              <Button
-                onClick={() => {
-                  setContent(null);
-                  setUrl("");
-                  router.push("/feeds");
-                }}
-                variant="secondary"
-                size="icon"
-                className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
-              >
-                <Rss className="w-4 h-4" />
-              </Button>
-            </div>
-
+              <div>
+                  {!content ? (<div>
+                      <Button asChild
+                          variant={"secondary"}
+                          className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
+                      >
+                          <Link href={"https://github.com/Ankitupa007/rwd"} target={"_blank"}>
+                          <Github className="w-5 h-5" />
+                          </Link>
+                      </Button>
+                  </div>):null}
+              </div>
             <Popover side={"right"}>
               <PopoverTrigger asChild>
                 <Button
@@ -221,7 +212,9 @@ const Header = () => {
               </PopoverContent>
             </Popover>
           </div>
+
         </div>
+
       </div>
     </header>
   );

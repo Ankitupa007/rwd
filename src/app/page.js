@@ -2,6 +2,7 @@
 import { Suspense } from "react";
 import SearchInput from "./search-input";
 import Header from "@/components/common/header";
+import {Loader} from "lucide-react";
 
 export const metadata = {
   title: "RWD - Read Without Distractions",
@@ -75,7 +76,10 @@ export default async function Page() {
   return (
     <div>
       <Header />
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div className="flex justify-center items-center h-[50vh]">
+          <Loader size={16} className="w-4 h-4 animate-spin mr-2" />
+          <span className="text-sm">just a sec...</span>
+      </div>}>
         <SearchInput />
       </Suspense>
     </div>
