@@ -47,10 +47,11 @@ const SearchInput = () => {
 
     useEffect(() => {
         if (content?.title) {
-            const decodedTitle = he.decode(content.metaDataTitle);
+            const decodedTitle = he.decode(content.metaDataTitle || content.title)
 
             // Update <title>
-            document.title = decodedTitle; 
+            document.title = content.metaDataTitle || content.title;
+            // document.title = content.title;
 
             // Update description if available
             const description = content.excerpt || "Read this article distraction-free.";
@@ -149,7 +150,6 @@ const SearchInput = () => {
       if (data.success) {
         // console.log("API success:", data.data);
         setContent(data.data);
-        console.log(data.data)
         setReadingTime(data.data.readingTime);
         setUrl(""); // Clear input field
         const saved = await saveArticle({
