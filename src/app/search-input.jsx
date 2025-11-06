@@ -1,15 +1,31 @@
 "use client";
-import {Button} from "@/components/ui/button";
-import {Card, CardContent} from "@/components/ui/card";
-import {Input} from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import he from "he";
-import {clearArticles, deleteArticle, getAllArticles, getArticle, saveArticle,} from "@/lib/indexedDB";
-import {useStore} from "@/lib/store";
-import {ArrowRight, HardDrive, Loader, Search, X} from "lucide-react";
-import {useSearchParams} from "next/navigation";
-import {useEffect, useState} from "react";
-import {toast} from "sonner";
+import {
+  clearArticles,
+  deleteArticle,
+  getAllArticles,
+  getArticle,
+  saveArticle,
+} from "@/lib/indexedDB";
+import { useStore } from "@/lib/store";
+import {
+  ArrowRight,
+  Cross,
+  FileText,
+  HardDrive,
+  Loader,
+  Search,
+  SearchCheckIcon,
+  X,
+} from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import Extension from "@/components/common/Extension";
+import FabOverlay from "@/components/FabOverlay";
 
 const SearchInput = () => {
   const {
@@ -29,39 +45,40 @@ const SearchInput = () => {
   const [isloading, setIsloading] = useState(false);
   const u = useSearchParams().get("u");
 
-    function setMeta(name, value) {
-        let el =
-            document.querySelector(`meta[name='${name}']`) ||
-            document.querySelector(`meta[property='${name}']`);
-        if (!el) {
-            el = document.createElement("meta");
-            if (name.startsWith("og:") || name.startsWith("twitter:")) {
-                el.setAttribute("property", name);
-            } else {
-                el.setAttribute("name", name);
-            }
-            document.head.appendChild(el);
-        }
-        el.setAttribute("content", value);
+  function setMeta(name, value) {
+    let el =
+      document.querySelector(`meta[name='${name}']`) ||
+      document.querySelector(`meta[property='${name}']`);
+    if (!el) {
+      el = document.createElement("meta");
+      if (name.startsWith("og:") || name.startsWith("twitter:")) {
+        el.setAttribute("property", name);
+      } else {
+        el.setAttribute("name", name);
+      }
+      document.head.appendChild(el);
     }
+    el.setAttribute("content", value);
+  }
 
-    useEffect(() => {
-        if (content?.title) {
-            const decodedTitle = he.decode(content.metaDataTitle || content.title)
+  useEffect(() => {
+    if (content?.title) {
+      const decodedTitle = he.decode(content.metaDataTitle || content.title);
 
-            // Update <title>
-            document.title = content.metaDataTitle || content.title;
-            // document.title = content.title;
+      // Update <title>
+      document.title = content.metaDataTitle || content.title;
+      // document.title = content.title;
 
-            // Update description if available
-            const description = content.excerpt || "Read this article distraction-free.";
-            setMeta("description", description);
-            setMeta("og:title", decodedTitle);
-            setMeta("og:description", description);
-            setMeta("twitter:title", decodedTitle);
-            setMeta("twitter:description", description);
-        }
-    }, [content]);
+      // Update description if available
+      const description =
+        content.excerpt || "Read this article distraction-free.";
+      setMeta("description", description);
+      setMeta("og:title", decodedTitle);
+      setMeta("og:description", description);
+      setMeta("twitter:title", decodedTitle);
+      setMeta("twitter:description", description);
+    }
+  }, [content]);
 
   // Load history and offline status on client-side mount
   useEffect(() => {
@@ -112,8 +129,6 @@ const SearchInput = () => {
     };
     handleParams();
   }, [u, setUrl]); // Include setUrl in dependencies
-
-
 
   const extractContent = async (inputUrl) => {
     // console.log("extractContent called with:", inputUrl); // Debug log
@@ -240,6 +255,7 @@ const SearchInput = () => {
 
   return (
     <div className="min-h-screen transition-all duration-500">
+      {content && !loading && <FabOverlay />}
       <div className="max-w-6xl mx-auto px-6">
         {loading && (
           <div className="flex justify-center items-center h-[50vh]">
@@ -249,13 +265,14 @@ const SearchInput = () => {
         )}
 
         {!content && !loading && (
-          <div className="text-center py-8">
+          <div className="text-center">
             <div className="py-10">
               <span className="mb-12 text-xs text-foreground/60 font-bold uppercase">
                 ZERO ADS | NO POP-UPS | ONLY CONTENT
               </span>
-              <h2 className="text-5xl font-serif lg:text-7xl font-semibold my-4 tracking-tighter">
-                Read Without <span className="">Distractions</span>
+              <h2 className="text-6xl font-serif lg:text-8xl font-medium my-4 tracking-tighter">
+                Read Without{" "}
+                <span className="text-[#F76F53] italic">Distractions</span>
               </h2>
               <p className="text-lg text-foreground/60">
                 Enter a URL to convert web content into a beautiful reading
@@ -275,7 +292,7 @@ const SearchInput = () => {
                   type="url"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="https://example.com/article"
+                  placeholder="Enter article URL here..."
                   className="w-full pl-12 pr-16 text-foreground/90 placeholder:text-foreground/30 py-6 rounded-full border border-border focus-visible:ring-0 transition-all duration-300"
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   disabled={isOffline}
@@ -284,7 +301,7 @@ const SearchInput = () => {
                   variant="default"
                   onClick={handleSubmit}
                   disabled={loading || isOffline}
-                  className="absolute right-1 top-1 w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
+                  className="absolute right-1 top-1 w-auto h-10 flex justify-center items-center rounded-full cursor-pointer"
                 >
                   {loading ? (
                     <Loader size={16} className="animate-spin" />
@@ -308,9 +325,10 @@ const SearchInput = () => {
                   <Button
                     variant="secondary"
                     onClick={handleClearAllHistory}
-                    className="text-sm text-gray-500 hover:text-red-700 cursor-pointer rounded-full"
+                    className="rounded-full bg-accent border-border border hover:border-red-200 dark:hover:border-red-700/20 hover:bg-red-100 dark:hover:bg-red-800/20 text-red-400 transition-all duration-200 backdrop-blur-lg cursor-pointer text-sm"
                   >
-                    Clear articles
+                    <X size={14} className="w-4 h-4" />
+                    Clear history
                   </Button>
                 </div>
 
@@ -318,7 +336,7 @@ const SearchInput = () => {
                   {urlHistory.map((item, index) => (
                     <Card
                       key={index}
-                      className="group py-0 relative overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg bg-card border-border"
+                      className="group rounded-3xl py-0 relative overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg bg-card border-border"
                       onClick={() => handleHistoryClick(item.url)}
                     >
                       <CardContent className="p-0">
@@ -375,7 +393,7 @@ const SearchInput = () => {
                             e.stopPropagation();
                             handleClearHistoryItem(item.url);
                           }}
-                          className="absolute top-2 right-2 rounded-full bg-background shadow-sm hover:text-red-700 text-foreground transition-all duration-200 backdrop-blur-sm cursor-pointer text-sm"
+                          className="absolute top-2 right-2 rounded-full bg-accent  hover:bg-red-100 dark:hover:bg-red-800/20 text-red-400 transition-all duration-200 backdrop-blur-lg cursor-pointer text-sm"
                         >
                           <X size={14} className="w-4 h-4" /> clear
                         </Button>

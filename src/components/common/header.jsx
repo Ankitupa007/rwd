@@ -1,10 +1,30 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
-import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ToggleTheme } from "../theme-toggle";
-import {ArrowLeft, Check, Copy, Download, Github, Minus, Plus, Rss, Settings,} from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  Copy,
+  Download,
+  Github,
+  Minus,
+  Plus,
+  Rss,
+  Settings,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -90,8 +110,9 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky border-b top-0 left-0 w-full z-50 transition-transform duration-300 ease-in-out ${isVisible ? "translate-y-0" : "-translate-y-full"
-        } backdrop-blur-2xl bg-background/40`}
+      className={`sticky top-0 left-0 px-2 w-full z-50 transition-transform duration-300 ease-in-out ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      } backdrop-blur-2xl bg-background/40`}
     >
       <div className="max-w-6xl mx-auto px-4 lg:px-0 py-4">
         <div className="flex items-center justify-between">
@@ -99,8 +120,8 @@ const Header = () => {
             <a href="/">
               <div className="flex items-center relative">
                 {/* <img src="/logo.png" alt="" className="w-16 mr-2" /> */}
-                <h1 className="text-5xl font-serif font-black z-10 w-10">R</h1>
-                <span className="absolute bottom-0 right-0 bg-[#ffeb3b] dark:bg-amber-300/80  rounded-full w-6 h-6"></span>
+                <h1 className="text-4xl font-serif font-black z-10 w-8">R</h1>
+                <span className="absolute bottom-0 right-0 bg-[#ffeb3b] dark:bg-amber-300/80  rounded-full w-5 h-5"></span>
               </div>
             </a>
           ) : (
@@ -109,13 +130,14 @@ const Header = () => {
               onClick={() => {
                 setContent(null);
                 setUrl("");
-                router.push("/")
+                router.push("/");
               }}
               className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
             >
               <ArrowLeft size={16} className="" />
             </Button>
           )}
+
           <div className="flex items-center space-x-2">
             {content && !loading && (
               <div className="flex items-center space-x-2">
@@ -140,18 +162,25 @@ const Header = () => {
                 </Button>
               </div>
             )}
-              <div>
-                  {!content ? (<div>
-                      <Button asChild
-                          variant={"secondary"}
-                          className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
-                      >
-                          <Link href={"https://github.com/Ankitupa007/rwd"} target={"_blank"}>
-                          <Github className="w-5 h-5" />
-                          </Link>
-                      </Button>
-                  </div>):null}
-              </div>
+            <div>
+              {!content ? (
+                <div>
+                  <Button
+                    asChild
+                    variant={"secondary"}
+                    className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
+                  >
+                    <Link
+                      href={"https://github.com/Ankitupa007/rwd"}
+                      target={"_blank"}
+                    >
+                      <Github className="w-5 h-5" />
+                    </Link>
+                  </Button>
+                </div>
+              ) : null}
+            </div>
+            <ToggleTheme />
             <Popover side={"right"}>
               <PopoverTrigger asChild>
                 <Button
@@ -203,18 +232,12 @@ const Header = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <span className="text-sm font-medium">Theme</span>
-                      <ToggleTheme />
-                    </div>
                   </div>
                 </div>
               </PopoverContent>
             </Popover>
           </div>
-
         </div>
-
       </div>
     </header>
   );
