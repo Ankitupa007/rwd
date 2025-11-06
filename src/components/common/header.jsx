@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ToggleTheme } from "../theme-toggle";
+import { ToggleTheme } from "./theme-toggle";
 import {
   ArrowLeft,
   Check,

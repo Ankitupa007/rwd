@@ -52,10 +52,11 @@ export default function FabCornerExpand() {
           onClick={() => setOpen(!open)}
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F76F53] text-[#f1f1f1] shadow-xl hover:bg-[#F76F53]/80 transition-all shadow-[#F76F53]/20 hover:shadow-[#F76F53]/40"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F76F53] text-[#f1f1f1] shadow-xl hover:bg-[#F76F53]/80 transition-all shadow-[#F76F53]/20 hover:shadow-[#F76F53]/40"
         >
           <Plus size={28} />
         </motion.button>
+        {/* <div className="w-10 h-10 bg-amber-400 animate-spin absolute top-5 left-5 blur-lg rounded-e-2xl -z-20"></div> */}
       </div>
 
       {/* Expanding Overlay */}
