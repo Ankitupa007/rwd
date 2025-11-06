@@ -65,7 +65,7 @@ const SearchInput = () => {
 
   return (
     <div className="min-h-screen transition-all duration-500">
-      {content && !loading && <FabOverlay />}
+      {/* {content && !loading && <FabOverlay />} */}
 
       <div className="max-w-6xl mx-auto px-6">
         {/* Loading state */}
