@@ -12,11 +12,12 @@ export const SearchBar = ({ value, onChange, onSubmit, loading, disabled }) => {
         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
         <Input
           type="url"
+          autoFocus
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Enter article URL here..."
           className="w-full pl-12 pr-16 text-foreground/90 placeholder:text-foreground/30 py-6 rounded-full border border-border focus-visible:ring-0 transition-all duration-300"
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+          onKeyDown={(e) => e.key === "Enter" && onSubmit()}
           disabled={disabled}
         />
         <Button

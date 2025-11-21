@@ -17,6 +17,7 @@ import { isValidUrl } from "@/lib/utils/validators";
 import { toast } from "sonner";
 
 const SearchInput = () => {
+
   const { url, setUrl, content, setContent, setReadingTime } = useStore();
 
   const isOffline = useOfflineStatus();
@@ -43,6 +44,7 @@ const SearchInput = () => {
     setUrl(normalizedUrl);
     fetchArticle(normalizedUrl, isOffline);
   });
+
 
   // Handle manual URL submission
   const handleSubmit = () => {
