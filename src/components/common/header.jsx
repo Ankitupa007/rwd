@@ -181,6 +181,8 @@ const Header = () => {
               ) : null}
             </div>
             <ToggleTheme />
+
+            {content && !loading && (
             <Popover side={"right"}>
               <PopoverTrigger asChild>
                 <Button
@@ -236,6 +238,7 @@ const Header = () => {
                 </div>
               </PopoverContent>
             </Popover>
+            )}
           </div>
         </div>
       </div>

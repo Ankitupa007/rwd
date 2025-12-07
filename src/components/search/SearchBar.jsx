@@ -29,7 +29,10 @@ export const SearchBar = ({ value, onChange, onSubmit, loading, disabled }) => {
           {loading ? (
             <Loader size={16} className="animate-spin" />
           ) : (
+            <span className="flex items-center">
+              <span className="italic font-serif mr-2">Read</span>
             <ArrowRight size={18} />
+            </span>
           )}
         </Button>
       </div>

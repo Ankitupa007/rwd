@@ -6,7 +6,7 @@ export const EmptyState = ({ isOffline }) => {
       <span className="mb-12 text-xs text-foreground/60 font-bold uppercase">
         ZERO ADS | NO POP-UPS | ONLY CONTENT
       </span>
-      <h2 className="text-6xl font-serif lg:text-8xl font-medium my-4 tracking-tighter">
+      <h2 className="text-5xl font-serif lg:text-8xl font-medium my-4 tracking-tighter">
         Read Without <span className="text-[#F76F53] italic">Distractions</span>
       </h2>
       <p className="text-lg text-foreground/60">

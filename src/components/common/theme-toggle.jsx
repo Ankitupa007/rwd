@@ -2,13 +2,13 @@
 
 import { useTheme } from "next-themes";
 import { Button } from "../ui/button";
-import { Moon, Sun, CloudMoon } from "lucide-react";
+import { Moon, Sun, Book, Lightbulb } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const themes = ["dark", "light", "book"];
 
 export const ToggleTheme = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const ToggleTheme = () => {
 
   const icon = {
     dark: <Sun className="size-4" />,
-    light: <CloudMoon className="size-4" />,
+    light: <Lightbulb className="size-4" />,
     book: <Moon className="size-4" />,
   };
 
@@ -39,7 +39,7 @@ export const ToggleTheme = () => {
       variant="secondary"
       className="w-10 h-10 flex justify-center items-center rounded-full cursor-pointer"
     >
-      {icon[theme || "dark"]}
+      {icon[resolvedTheme || "dark"] || icon["dark"]}
       <span className="sr-only">Toggle Theme</span>
     </Button>
   );
