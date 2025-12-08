@@ -1,5 +1,18 @@
 import { JSDOM } from "jsdom";
 import { Readability } from "@mozilla/readability";
+import dns from "dns/promises";
+import createDOMPurify from "dompurify";
+
+const MAX_BODY_SIZE = 5 * 1024 * 1024; // 5MB limit
+const PRIVATE_IP_RANGES = [
+  /^127\./,
+  /^10\./,
+  /^172\.(1[6-9]|2[0-9]|3[0-1])\./,
+  /^192\.168\./,
+  /^0\.0\.0\.0$/,
+  /^::1$/,
+  /^fc00:/,
+];
 
 // Utility function to calculate reading time
 function calculateReadingTime(text) {
@@ -75,6 +88,31 @@ function setCached(url, data) {
   }
 }
 
+
+function isPrivateIp(ip) {
+  return PRIVATE_IP_RANGES.some((regex) => regex.test(ip));
+}
+
+async function ensureSafeUrl(url) {
+  const urlObj = new URL(url);
+  
+  if (urlObj.hostname === 'localhost') {
+    throw new Error("Access to localhost is denied");
+  }
+
+  try {
+    const { address } = await dns.lookup(urlObj.hostname);
+    if (isPrivateIp(address)) {
+      throw new Error(`Access to private IP ${address} is denied`);
+    }
+  } catch (error) {
+    if (error.message.includes("denied")) throw error;
+    // If DNS lookups fail, we might want to block or allow.
+    // Blocking is safer.
+    console.error(`DNS lookup failed for ${urlObj.hostname}:`, error);
+  }
+}
+
 async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -135,6 +173,10 @@ async function extractArticleContent(url, feedName) {
     await new Promise((r) => setTimeout(r, 200 + Math.random() * 600));
 
     // Fetch the webpage with retry
+    // URL Safety Check
+    await ensureSafeUrl(url);
+
+    // Fetch the webpage with retry
     console.log(`Fetching URL: ${url}`);
     const response = await fetchWithRetry(url, {
       headers: {
@@ -156,6 +198,11 @@ async function extractArticleContent(url, feedName) {
       },
       timeout: 10000,
     });
+
+    const contentLength = response.headers.get("content-length");
+    if (contentLength && parseInt(contentLength) > MAX_BODY_SIZE) {
+      throw new Error("Content too large");
+    }
 
     const html = await response.text();
 
@@ -200,6 +247,11 @@ async function extractArticleContent(url, feedName) {
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
       .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
       .replace(/<!--[\s\S]*?-->/g, "");
+    
+    // Sanitize with DOMPurify
+    const window = new JSDOM('').window;
+    const DOMPurify = createDOMPurify(window);
+    const sanitizedContent = DOMPurify.sanitize(cleanContent);
 
     const articleData = {
       title: article.title || metadata.title,
@@ -209,7 +261,7 @@ async function extractArticleContent(url, feedName) {
       description: metadata.description,
       image: metadata.image,
       siteName: metadata.siteName,
-      content: cleanContent,
+      content: sanitizedContent,
       textContent: textContent,
       readingTime,
       wordCount,

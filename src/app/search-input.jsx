@@ -1,4 +1,5 @@
 "use client";
+import { useCallback } from "react";
 import { useStore } from "@/lib/store";
 import { useOfflineStatus } from "@/hooks/useOfflineStatus";
 import { useHistory } from "@/hooks/useHistory";
@@ -29,21 +30,25 @@ const SearchInput = () => {
   } = useHistory();
 
   // Article fetching with callback when article is loaded
-  const { fetchArticle, loading } = useArticle((article) => {
+  const handleArticleLoaded = useCallback((article) => {
     setContent(article);
     setReadingTime(article.readingTime);
     setUrl("");
     loadHistory(); // Refresh history list
-  });
+  }, [setContent, setReadingTime, setUrl, loadHistory]);
+
+  const { fetchArticle, loading } = useArticle(handleArticleLoaded);
 
   // Update document metadata when content changes
   useMetadata(content);
 
   // Handle URL parameter from query string (?u=...)
-  useUrlParam((normalizedUrl) => {
+  const handleUrlParam = useCallback((normalizedUrl) => {
     setUrl(normalizedUrl);
     fetchArticle(normalizedUrl, isOffline);
-  });
+  }, [setUrl, fetchArticle, isOffline]);
+
+  useUrlParam(handleUrlParam);
 
 
   // Handle manual URL submission

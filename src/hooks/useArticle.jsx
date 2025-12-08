@@ -1,12 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { getArticle, saveArticle } from "@/lib/indexedDB";
 import { toast } from "sonner";
 
 export const useArticle = (onSuccess) => {
   const [loading, setLoading] = useState(false);
 
-  const fetchArticle = async (url, isOffline) => {
+  const fetchArticle = useCallback(async (url, isOffline) => {
     setLoading(true);
     try {
       // Safe cache read
@@ -93,7 +93,7 @@ export const useArticle = (onSuccess) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [onSuccess]);
 
   return { fetchArticle, loading };
 };
